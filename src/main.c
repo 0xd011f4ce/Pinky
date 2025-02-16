@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <utils/buffer.h>
+
 int
 main (int argc, char *argv[])
 {
@@ -28,5 +30,6 @@ main (int argc, char *argv[])
 
 	// TODO: Interpret and compile XDDD
 
+	fclose (fp);
 	return EXIT_SUCCESS;
 }
