@@ -13,6 +13,7 @@ struct vector
 void vector_init (struct vector *v);
 void vector_push (void *elm, struct vector *v);
 void *vector_pop (struct vector *v);
+void *vector_get (int index, struct vector *v);
 void vector_free (struct vector *v);
 
 #endif

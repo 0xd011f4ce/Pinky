@@ -4,7 +4,8 @@ ECHO=echo -e
 CFLAGS=-Wall -Werror -std=gnu99 -O0 -g -Iinclude
 LIBS=
 
-FILES=build/main.o build/utils/vector.o build/utils/buffer.o
+FILES=build/main.o build/utils/vector.o build/utils/buffer.o build/token.o \
+			build/lexer.o
 
 OUT=bin/pinky.out
 
@@ -21,6 +22,14 @@ build/utils/vector.o: src/utils/vector.c
 	@$(CC) $(CFLAGS) $< -c -o $@ $(LIBS)
 
 build/utils/buffer.o: src/utils/buffer.c
+	@$(ECHO) "CC\t\t"$<
+	@$(CC) $(CFLAGS) $< -c -o $@ $(LIBS)
+
+build/token.o: src/token.c
+	@$(ECHO) "CC\t\t"$<
+	@$(CC) $(CFLAGS) $< -c -o $@ $(LIBS)
+
+build/lexer.o: src/lexer.c
 	@$(ECHO) "CC\t\t"$<
 	@$(CC) $(CFLAGS) $< -c -o $@ $(LIBS)
 

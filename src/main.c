@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <utils/buffer.h>
+#include <lexer.h>
+#include <token.h>
 
 int
 main (int argc, char *argv[])
@@ -29,6 +30,16 @@ main (int argc, char *argv[])
 	buf[fsize] = '\0';
 
 	// TODO: Interpret and compile XDDD
+	struct lexer lexer = { 0 };
+	lexer_init (buf, &lexer);
+	lexer_tokenise (&lexer);
+	for (int i = 0; i < lexer.tokens.size; i++)
+		{
+			struct token *tok = vector_get (i, &lexer.tokens);
+			token_print (tok);
+		}
+
+	lexer_free (&lexer);
 
 	fclose (fp);
 	return EXIT_SUCCESS;

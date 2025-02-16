@@ -91,6 +91,19 @@ buffer_pop (struct buffer *b)
 	return *b->pp++;
 }
 
+_Bool
+buffer_match (char c, struct buffer *b)
+{
+	if (!b || !b->content || !b->pp)
+		return 0;
+
+	if (*b->pp != c)
+		return 0;
+
+	b->pp++;
+	return 1;
+}
+
 char *
 buffer_get (struct buffer *b)
 {

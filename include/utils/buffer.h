@@ -19,6 +19,7 @@ void buffer_push (const char *str, struct buffer *b);
 void buffer_seek (int offset, char type, struct buffer *b);
 char buffer_peek (struct buffer *b);
 char buffer_pop (struct buffer *b);
+_Bool buffer_match (char c, struct buffer *b);
 char *buffer_get (struct buffer *b);
 char *buffer_get_at_position (struct buffer *b);
 void buffer_free (struct buffer *b);

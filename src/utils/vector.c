@@ -46,14 +46,25 @@ vector_pop (struct vector *v)
 	return v->content[--v->size];
 }
 
+void *
+vector_get (int index, struct vector *v)
+{
+	if (!v)
+		return NULL;
+
+	if (index > v->size)
+		return NULL;
+
+	return v->content[index];
+}
+
 void
 vector_free (struct vector *v)
 {
 	if (!v)
 		return;
 
-	if (v->content)
-		free (v->content);
+	free (v->content);
 
 	v->size = 0;
 	v->capacity = 0;
