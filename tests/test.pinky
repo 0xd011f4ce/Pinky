@@ -8,5 +8,3 @@ if x >= 0 then
 else
 	println ("x is negative")
 end
-
-"This string is not terminated!

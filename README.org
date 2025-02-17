@@ -1,0 +1,22 @@
+* Pinky
+
+[[https://pinky-lang.org/][Pinky]] is a very little and simple programming language. I wanted to write an
+interpreter and a compiler for it, as I think it would be a really neat
+programming language to write these two things for.
+
+The code might not be the state-of-art, as I am focusing more on doing the
+compiler, than doing optimised code. Of course, as soon as I notice that
+something can be improved, I'll do it.
+
+** TO-DO
+
+As of now, practically nothing has been made xd.
+
+- [-] Lexer: I am working on it. For now it supports almost everything but
+  keywords.
+- [ ] Parser: I haven't started it.
+- [ ] Interpreter
+  - [ ] REPL
+- [ ] Code generation
+  - [ ] Should I do some IR?
+- [ ] Make it cool :sunglasses:
