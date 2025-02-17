@@ -56,7 +56,7 @@ buffer_push (const char *str, struct buffer *b)
 char
 buffer_advance (struct buffer *b)
 {
-	if (!b)
+	if (!b || !buffer_in_bounds (b))
 		return 0;
 	return *b->curr++;
 }
@@ -64,19 +64,24 @@ buffer_advance (struct buffer *b)
 char
 buffer_peek (struct buffer *b)
 {
+	if (!b || !buffer_in_bounds (b))
+		return 0;
+
 	return *b->curr;
 }
 
 char
 buffer_lookahead (int n, struct buffer *b)
 {
+	if (!b || !buffer_in_bounds (b))
+		return 0;
 	return *(b->curr + n);
 }
 
 _Bool
 buffer_match (char c, struct buffer *b)
 {
-	if (*b->curr != c)
+	if (!b || !buffer_in_bounds (b) || *b->curr != c)
 		return 0;
 	b->curr++;
 	return 1;
@@ -105,6 +110,14 @@ buffer_curr (struct buffer *b)
 	if (!b)
 		return NULL;
 	return b->curr;
+}
+
+_Bool
+buffer_in_bounds (struct buffer *b)
+{
+	if (!b)
+		return 0;
+	return b->curr <= b->content + b->length;
 }
 
 void

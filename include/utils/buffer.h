@@ -25,6 +25,7 @@ char *buffer_content (struct buffer *b);
 
 char *buffer_start (struct buffer *b);
 char *buffer_curr (struct buffer *b);
+_Bool buffer_in_bounds (struct buffer *b);
 
 void buffer_free (struct buffer *b);
 

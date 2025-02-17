@@ -51,7 +51,8 @@ lexer_tokenise (struct lexer *l)
 			else if (c == '#')
 				{
 					// let's assume single line comments start with #
-					while (buffer_peek (&l->source) != '\n')
+					while (buffer_peek (&l->source) != '\n'
+								 && buffer_in_bounds (&l->source))
 						buffer_advance (&l->source);
 				}
 
@@ -120,6 +121,9 @@ lexer_tokenise (struct lexer *l)
 					if (buffer_match ('=', &l->source))
 						add_token (TOK_ASSIGN, ":=", l);
 				}
+			/* TODO: check if it's a digit, and check if it's an int or a float */
+			/* TODO: Check if it's "" or '' to read a string*/
+			/* TODO: Check if it's an alpha or _, then handle identifiers */
 		}
 }
 
