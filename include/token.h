@@ -71,6 +71,7 @@ enum token_type
 struct token
 {
 	enum token_type type;
+	unsigned int line;
 	struct buffer lexeme;
 };
 

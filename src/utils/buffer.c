@@ -70,7 +70,7 @@ buffer_peek (struct buffer *b)
 char
 buffer_lookahead (int n, struct buffer *b)
 {
-	return *(b->curr + 1);
+	return *(b->curr + n);
 }
 
 _Bool

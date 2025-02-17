@@ -10,7 +10,9 @@ add_token (enum token_type type, const char *lexeme, struct lexer *l)
 	if (!l)
 		return;
 
-	vector_push (token_create (type, lexeme), &l->tokens);
+	struct token *tok = token_create (type, lexeme);
+	tok->line = l->line;
+	vector_push (tok, &l->tokens);
 }
 
 void
@@ -39,12 +41,85 @@ lexer_tokenise (struct lexer *l)
 			l->source.start = buffer_curr (&l->source);
 			c = buffer_advance (&l->source);
 
+			if (c == '\n')
+				{
+					l->line++;
+					continue;
+				}
+			else if (c == ' ' || c == '\t' || c == '\r')
+				continue;
+			else if (c == '#')
+				{
+					// let's assume single line comments start with #
+					while (buffer_peek (&l->source) != '\n')
+						buffer_advance (&l->source);
+				}
+
+			/* single line comments */
 			if (c == '+')
 				add_token (TOK_PLUS, "+", l);
-			if (c == '-')
+			else if (c == '-')
 				add_token (TOK_MINUS, "-", l);
-			if (c == '*')
+			else if (c == '*')
 				add_token (TOK_STAR, "*", l);
+			else if (c == '(')
+				add_token (TOK_LPAREN, "(", l);
+			else if (c == ')')
+				add_token (TOK_RPAREN, ")", l);
+			else if (c == '{')
+				add_token (TOK_LCURLY, "{", l);
+			else if (c == '}')
+				add_token (TOK_RCURLY, "}", l);
+			else if (c == '[')
+				add_token (TOK_LSQUAR, "[", l);
+			else if (c == ']')
+				add_token (TOK_RSQUAR, "]", l);
+			else if (c == '.')
+				add_token (TOK_DOT, ".", l);
+			else if (c == ',')
+				add_token (TOK_COMMA, ",", l);
+			else if (c == '^')
+				add_token (TOK_CARET, "^", l);
+			else if (c == '/')
+				add_token (TOK_SLASH, "/", l);
+			else if (c == ';')
+				add_token (TOK_SEMICOLON, ";", l);
+			else if (c == '?')
+				add_token (TOK_QUESTION, "?", l);
+			else if (c == '%')
+				add_token (TOK_MOD, "%", l);
+			/* more-than-one character tokens */
+			else if (c == '=')
+				{
+					if (buffer_match ('=', &l->source))
+						add_token (TOK_EQ, "==", l);
+				}
+			else if (c == '~')
+				{
+					if (buffer_match ('=', &l->source))
+						add_token (TOK_NE, "~=", l);
+					else
+						add_token (TOK_NOT, "~", l);
+				}
+			else if (c == '<')
+				{
+					if (buffer_match ('=', &l->source))
+						add_token (TOK_LE, "<=", l);
+					else
+						add_token (TOK_LT, "<", l);
+				}
+			else if (c == '>')
+				{
+					if (buffer_match ('=', &l->source))
+						add_token (TOK_GE, ">=", l);
+					else
+						add_token (TOK_GT, ">", l);
+				}
+			else if (c == ':')
+				{
+					if (buffer_match ('=', &l->source))
+						add_token (TOK_ASSIGN, ":=", l);
+				}
 		}
 }
 
