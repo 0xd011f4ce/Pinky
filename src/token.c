@@ -19,7 +19,8 @@ token_print (struct token *t)
 	if (!t)
 		return;
 
-	printf ("(TOK_TYPE: %d, LEXEME: %s)\n", t->type, buffer_get (&t->lexeme));
+	printf ("(TOK_TYPE: %d, LEXEME: %s)\n", t->type,
+					buffer_content (&t->lexeme));
 }
 
 void

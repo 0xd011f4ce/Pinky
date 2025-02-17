@@ -33,21 +33,19 @@ lexer_tokenise (struct lexer *l)
 	if (!l)
 		return;
 
-	char c = buffer_pop (&l->source);
-	do
+	char c = 0;
+	while (*buffer_curr (&l->source) != '\0')
 		{
+			l->source.start = buffer_curr (&l->source);
+			c = buffer_advance (&l->source);
+
 			if (c == '+')
 				add_token (TOK_PLUS, "+", l);
-
 			if (c == '-')
 				add_token (TOK_MINUS, "-", l);
-
 			if (c == '*')
 				add_token (TOK_STAR, "*", l);
-
-			c = buffer_pop (&l->source);
 		}
-	while (c != '\0');
 }
 
 void

@@ -11,14 +11,15 @@ buffer_resize (size_t len, struct buffer *b)
 	if (!b)
 		return;
 
-	b->capacity += len + 1;
-	size_t offset = b->pp - b->start;
+	unsigned long curr_offset = b->curr - b->content;
+	unsigned long start_offset = b->start - b->content;
+	b->capacity += len;
 	b->content = realloc (b->content, sizeof (char) * b->capacity);
-	assert (b->content);
+	if (!b->content)
+		return;
 
-	b->start = b->content;
-	b->end = b->content + (b->capacity - 1);
-	b->pp = b->start + offset;
+	b->curr = b->content + curr_offset;
+	b->start = b->content + start_offset;
 }
 
 void
@@ -27,85 +28,62 @@ buffer_init (struct buffer *b)
 	if (!b)
 		return;
 
+	memset (b, 0, sizeof (struct buffer));
 	b->capacity = 10;
-	b->length = 0;
-	b->content = calloc (b->capacity, sizeof (char));
+	b->content = calloc (1, sizeof (char) * b->capacity);
 	if (!b->content)
 		return;
+
 	b->start = b->content;
-	b->end = b->content + (b->capacity - 1);
-	b->pp = b->start;
+	b->curr = b->content;
 }
 
 void
 buffer_push (const char *str, struct buffer *b)
 {
-	if (!str || !b || !b->content)
+	if (!b || !b->content || !str)
 		return;
 
 	size_t len = strlen (str);
-	if (b->length + len >= b->capacity)
+	if ((b->length + len) >= b->capacity)
 		buffer_resize (len, b);
 
-	strncpy (b->content + b->length, str, len);
+	char *start = b->content + b->length;
+	strncpy (start, str, len);
 	b->length += len;
 }
 
-void
-buffer_seek (int offset, char type, struct buffer *b)
+char
+buffer_advance (struct buffer *b)
 {
 	if (!b)
-		return;
-
-	switch (type)
-		{
-		case SEEK_SET:
-			b->pp = b->start + offset;
-			break;
-
-		case SEEK_CUR:
-			b->pp = b->pp + offset < b->end ? b->pp + offset : b->end;
-			break;
-
-		case SEEK_END:
-			b->pp = b->end;
-			break;
-		}
+		return 0;
+	return *b->curr++;
 }
 
 char
 buffer_peek (struct buffer *b)
 {
-	if (!b || !b->content || !b->pp)
-		return 0;
-
-	return *(b->pp + 1);
+	return *b->curr;
 }
 
 char
-buffer_pop (struct buffer *b)
+buffer_lookahead (int n, struct buffer *b)
 {
-	if (!b || !b->content || !b->pp)
-		return 0;
-
-	return *b->pp++;
+	return *(b->curr + 1);
 }
 
 _Bool
 buffer_match (char c, struct buffer *b)
 {
-	if (!b || !b->content || !b->pp)
+	if (*b->curr != c)
 		return 0;
-
-	if (*b->pp != c)
-		return 0;
-
-	b->pp++;
+	b->curr++;
 	return 1;
 }
 
 char *
-buffer_get (struct buffer *b)
+buffer_content (struct buffer *b)
 {
 	if (!b)
 		return NULL;
@@ -114,12 +92,19 @@ buffer_get (struct buffer *b)
 }
 
 char *
-buffer_get_at_position (struct buffer *b)
+buffer_start (struct buffer *b)
 {
-	if (!b || !b->pp)
+	if (!b)
 		return NULL;
+	return b->start;
+}
 
-	return b->pp < b->end ? b->pp : b->end;
+char *
+buffer_curr (struct buffer *b)
+{
+	if (!b)
+		return NULL;
+	return b->curr;
 }
 
 void
