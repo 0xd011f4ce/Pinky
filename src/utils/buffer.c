@@ -65,7 +65,7 @@ char
 buffer_peek (struct buffer *b)
 {
 	if (!b || !buffer_in_bounds (b))
-		return 0;
+		return -1;
 
 	return *b->curr;
 }
@@ -94,6 +94,31 @@ buffer_content (struct buffer *b)
 		return NULL;
 
 	return b->content;
+}
+
+size_t
+buffer_slice_len (struct buffer *b)
+{
+	if (!b || !buffer_in_bounds (b))
+		return 0;
+	return b->curr - b->start;
+}
+
+char *
+buffer_slice (struct buffer *b)
+{
+	if (!b || !buffer_in_bounds (b))
+		return NULL;
+
+	size_t len = buffer_slice_len (b);
+	char *slice
+			= calloc (len + 1, sizeof (char)); /* PROGRAMMER MUST FREE THIS!!!! */
+	if (!slice)
+		return NULL;
+
+	strncpy (slice, b->start, len);
+	slice[len] = '\0';
+	return slice;
 }
 
 char *

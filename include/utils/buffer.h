@@ -23,6 +23,9 @@ _Bool buffer_match (char c, struct buffer *b);
 
 char *buffer_content (struct buffer *b);
 
+size_t buffer_slice_len (struct buffer *b);
+char *buffer_slice (struct buffer *b);
+
 char *buffer_start (struct buffer *b);
 char *buffer_curr (struct buffer *b);
 _Bool buffer_in_bounds (struct buffer *b);
