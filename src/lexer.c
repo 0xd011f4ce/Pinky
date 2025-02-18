@@ -104,19 +104,18 @@ lexer_tokenise (struct lexer *l)
 				}
 			else if (c == ' ' || c == '\t' || c == '\r')
 				continue;
-			else if (c == '#')
-				{
-					// let's assume single line comments start with #
-					while (buffer_peek (&l->source) != '\n'
-								 && buffer_in_bounds (&l->source))
-						buffer_advance (&l->source);
-				}
-
-			/* single line comments */
 			if (c == '+')
 				add_token (TOK_PLUS, l);
 			else if (c == '-')
-				add_token (TOK_MINUS, l);
+				{
+					/* single line comments */
+					if (buffer_match ('-', &l->source))
+						while (buffer_peek (&l->source) != '\n'
+									 && buffer_in_bounds (&l->source))
+							buffer_advance (&l->source);
+					else
+						add_token (TOK_MINUS, l);
+				}
 			else if (c == '*')
 				add_token (TOK_STAR, l);
 			else if (c == '(')
@@ -189,8 +188,10 @@ lexer_tokenise (struct lexer *l)
 				{
 					handle_identifier (l);
 				}
-			/* TODO: Check if it's "" or '' to read a string*/
-			/* TODO: Check if it's an alpha or _, then handle identifiers */
+			else
+				{
+					tokeniser_error ("Unexpected character", l);
+				}
 		}
 }
 
